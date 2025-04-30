@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Styling */
+/* Menghilangkan scrollbar tetapi tetap bisa di-scroll */
+html {
+  overflow-y: scroll; /* Memungkinkan scroll vertikal */
+  scrollbar-width: none; /* Menghilangkan scrollbar di Firefox */
+}
+
+body {
+  margin: 0;
+  overflow-y: scroll; /* Scroll tetap berfungsi */
+  overflow-x: hidden; /* Menghilangkan scroll horizontal */
+}
+
+body::-webkit-scrollbar {
+  display: none; /* Menghilangkan scrollbar di Chrome, Safari, dan Edge */
+}
+
+body {
+  background-color: #7D7D7D; /* Warna latar belakang */
+}
+
+/* Header Styling */
+.header {
+  background-color: #A9B782; /* Warna hijau header */
+ /* Garis bawah header */
+  color: white;
+  padding: 1rem; /* Padding header */
+}
+
+
+/* Logo Image Styling */
+.logo-image {
+  width: 42.58px; /* Lebar logo */
+  height: 42.58px; /* Tinggi logo */
+  border-radius: 50%; /* Membuat logo berbentuk lingkaran */
+  object-fit: cover; /* Memastikan logo tidak terdistorsi */
+}
+
+/* User Info Styling */
+.user-info {
+  font-size: 0.875rem; /* Ukuran font user info */
+  white-space: nowrap; /* Mencegah teks terpotong atau turun ke baris baru */
+}
+
+/* Typography Styling */
+
+
+.font-poppins{
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 14;
+}
+
+.font-pt{
+  font-family: "PT Serif", serif;
+  /* font-weight: 400; */
+  font-style: normal;
+  
+}
+
+.user-details {
+  /* color: #4a5568; */
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Image Styling */
+.school-image {
+  border-radius: 50px; /* Sudut melengkung untuk gambar */
+  width: 75%; /* Sesuaikan lebar gambar */
+  max-height: 600px; /* Tinggi maksimum gambar */
+  object-fit: cover; /* Memastikan gambar terpotong dengan baik */
+  filter: brightness(0.5); /* Efek kecerahan gelap */
+}
+
+
+
+.bg-image {
+  background-image: url('../assets/img/bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.header {
+  height: 70px; /* Mengatur tinggi navbar */
+  border-bottom: 2px solid #d1d5db; /* Warna abu-abu untuk border bawah */
+}
+
+
+/* Flexbox Layout untuk Centering */
+.text-overlay {
+  position: absolute;
+  top: 60%; /* Sesuaikan agar berada lebih ke tengah */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  z-index: 10;
+  padding: 1rem;
+  max-width: 90%;
+}
+
+
+
+/* Typography Styling */
+
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* Posisi di bawah elemen yang memanggil dropdown */
+  right: 0;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 12rem; /* Sesuaikan lebar jika diperlukan */
+  z-index: 50; /* Pastikan nilai z-index cukup tinggi */
+}
+
+.dropdown-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 20px;
+}
+
+.dropdown-menu li {
+  padding: 0.5rem 1rem;
+  color: black; /* Mengatur warna teks menjadi hitam */
+  border-radius: 20px;
+}
+
+.dropdown-menu li:hover {
+  background-color: #f3f4f6; /* Mengatur warna latar belakang saat hover */
+  cursor: pointer;
+}
+
+/* Icon Background Styling */
+.icon-background {
+  width: 2.3rem; /* Ukuran lingkaran */
+  height: 2.3rem; /* Ukuran lingkaran */
+  background-color: white; /* Warna latar belakang lingkaran */
+  border-radius: 50%; /* Membuat lingkaran */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 800px) {
+  .text-overlay h3 {
+    font-size: 1.12rem;
+  }
+
+  .text-overlay p {
+    font-size: 1.12rem;
+  }
+}
