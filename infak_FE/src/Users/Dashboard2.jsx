@@ -92,9 +92,10 @@ const Dashboard2 = () => {
               </div>
             </div>
           </div>
-          <p className="absolute bottom-2 right-2 text-right text-gray-600 text-sm">
-            Riwayat tagihan? Klik di sini!
-          </p>
+          <p className="absolute bottom-4 w-full text-center text-black text-lg font-bold">
+  Riwayat tagihan? Klik di sini!
+</p>
+
         </div>
 
         {/* Image Section */}
@@ -120,7 +121,7 @@ const Dashboard2 = () => {
             className="w-full h-full object-cover"
             style={{ borderRadius: "20px" }}
           />
-          <p className="absolute bottom-2 right-2 text-right text-gray-600 text-sm">
+          <p className="absolute bottom-4 w-full text-center text-black text-lg font-bold">
             Bayar tagihan? Klik di sini!
           </p>
         </div>

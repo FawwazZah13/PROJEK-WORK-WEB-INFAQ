@@ -28,7 +28,6 @@ class BayarController extends Controller
             'data' => BayarResource::collection($bayar),
         ]);
     }
-    // public function create(Request $request)
     // {
     //     // Pastikan bulan_id bisa berupa array atau string (dipisahkan koma)
     //     $request->merge([
@@ -139,8 +138,6 @@ class BayarController extends Controller
         'siswa_id' => 'required|exists:tb_siswa,id',
         'bulan_id' => 'required|array',
         'bulan_id.*' => 'integer|exists:tb_bulan,id',
-        'kategori' => 'required|string',
-        'metode' => 'required|string',
     ]);
 
     if ($validator->fails()) {
@@ -189,8 +186,6 @@ class BayarController extends Controller
         $bayar = Bayar::create([
             'siswa_id' => $request->siswa_id,
             'bulan_id' => json_encode($request->bulan_id),
-            'kategori' => $request->kategori,
-            'metode' => $request->metode,
             'tanggal_bayar' => now(),
             'order_id' => $order_id,
             'status_pay' => 'pending',
@@ -226,177 +221,6 @@ class BayarController extends Controller
         ], 500);
     }
 }
-// public function storeBukti(Request $request)
-// {
-//     $validator = Validator::make($request->all(), [
-//         'order_id' => 'required',
-//         'upload_pembayaran' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-//     ]);
-
-//     if ($validator->fails()) {
-//         return response()->json([
-//             'success' => false,
-//             'message' => 'Ada kesalahan validasi',
-//             'errors' => $validator->errors()
-//         ], 422);
-//     }
-
-//     // Cari transaksi bayar berdasarkan order_id
-//     $bayar = Bayar::where('order_id', $request->order_id)->first();
-//     if (!$bayar) {
-//         return response()->json([
-//             'success' => false,
-//             'message' => 'Transaksi tidak ditemukan',
-//         ], 404);
-//     }
-
-//     // Upload gambar bukti pembayaran
-//     $imageName = null;
-//     if ($request->hasFile('upload_pembayaran')) {
-//         $image = $request->file('upload_pembayaran');
-//         $imageName = time() . '_' . $image->getClientOriginalName();
-//         $image->move(public_path('assets/img'), $imageName);
-//     }
-
-//     // Simpan data bukti pembayaran
-//     $bukti = Bukti::create([
-//         'tanggal_bayar' => now(),
-//         'penerima' => 'Admin',
-//         'upload_pembayaran' => $imageName,
-//         'status' => 1, // 1 = Sudah dibayar
-//         'bulan_id' => $bayar->bulan_id,
-//         'id_bayar' => $bayar->id,
-//     ]);
-
-//     // Update status pembayaran & bukti_id di tabel bayar
-//     $bayar->update([
-//         'status_pay' => 'paid',
-//         'bukti_id' => $bukti->id, // Simpan ID bukti di tabel bayar
-//     ]);
-
-//     return response()->json([
-//         'success' => true,
-//         'message' => 'Bukti pembayaran berhasil disimpan.',
-//         'bukti' => $bukti,
-//         'bayar' => $bayar
-//     ], 201);
-// }
-
-
-    // public function create(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'siswa_id' => 'required',
-    //         'bulan_id' => 'required',
-    //         'kategori' => 'required',
-    //         'metode' => 'required',
-    //         'upload_pembayaran' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-    //     ]);
-    
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Ada kesalahan validasi',
-    //             'errors' => $validator->errors()
-    //         ], 422);
-    //     }
-    
-    //     $imageName = null;
-    
-    //     // Periksa apakah file gambar telah diunggah
-    //     if ($request->hasFile('upload_pembayaran')) {
-    //         $image = $request->file('upload_pembayaran');
-    //         $imageName = time() . '_' . $image->getClientOriginalName();
-    //         $image->move(public_path('assets/img'), $imageName);
-    //     }
-    
-    //     // Ambil data siswa berdasarkan siswa_id
-    //     $siswa = Siswas::find($request->siswa_id);
-    
-    //     if (!$siswa) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Siswa tidak ditemukan',
-    //         ], 404);
-    //     }
-    
-    //     // Konfigurasi Midtrans
-    //     \Midtrans\Config::$serverKey = config('midtrans.server_key');
-    //     \Midtrans\Config::$isProduction = config('midtrans.is_production');
-    //     \Midtrans\Config::$isSanitized = config('midtrans.is_sanitized');
-    
-    //     $order_id = 'IS-' . uniqid();
-    
-    //     $params = [
-    //         'transaction_details' => [
-    //             'order_id' => $order_id,
-    //             'gross_amount' => $siswa->nominal,
-    //         ],
-    //         'customer_details' => [
-    //             'first_name' => $siswa->name,
-    //             'email' => $request->user()->email ?? 'anonymous@domain.com',
-    //         ],
-    //         'item_details' => [
-    //             [
-    //                 'id' => $order_id,
-    //                 'quantity' => 1,
-    //                 'price' => $siswa->nominal,
-    //                 'name' => 'Pembayaran Infaq Shodaqoh',
-    //             ]
-    //         ]
-    //     ];
-    
-    //     try {
-    //         $paymentResponse = \Midtrans\Snap::createTransaction($params);
-    
-    //         // Buat data di tabel bukti
-    //         $bukti = Bukti::create([
-    //             'tanggal_bayar' => now(),
-    //             'penerima' => 'Admin', // Atur sesuai kebutuhan Anda
-    //             'paraf' => $request->paraf, // Optional
-    //             'ttd_ortu' => $request->ttd_ortu, // Optional
-    //             'upload_pembayaran' => $imageName,
-    //             'status' => 0,
-    //             'bulan_id' => $request->bulan_id,
-    //             'id_bayar' => null, // Akan diperbarui setelah data bayar dibuat
-    //         ]);
-    
-    //         // Buat data di tabel bayar
-    //         $bayar = Bayar::create([
-    //             'siswa_id' => $request->siswa_id,
-    //             'bulan_id' => $request->bulan_id,
-    //             'kategori' => $request->kategori,
-    //             'metode' => $request->metode,
-    //             'tanggal_bayar' => now(),
-    //             'order_id' => $order_id,
-    //             'bukti_id' => $bukti->id,
-    //             'status_pay' => 'pending',
-    //             'redirect_url' => $paymentResponse->redirect_url,
-    //         ]);
-    
-    //         // Perbarui id_bayar di tabel bukti
-    //         $bukti->update([
-    //             'id_bayar' => $bayar->id,
-    //         ]);
-    
-    //         return response()->json([
-    //             'success' => true,
-    //             'message' => 'Sukses membuat pembayaran. Silakan lanjutkan pembayaran.',
-    //             'data' => $bayar,
-    //             'bukti' => $bukti,
-    //             'payment_response' => $paymentResponse
-    //         ], 201);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Gagal membuat transaksi: ' . $e->getMessage(),
-    //         ], 500);
-    //     }
-    // }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request, string $id)
     {
         $bayar = Bayar::find($id);

@@ -25,8 +25,6 @@ use App\Http\Controllers\API\KategoriController;
 
 //LOGIN
 Route::post('/login', [UsersController::class, 'login']);
-// Route::middleware(['web'])->post('/login', [UsersController::class, 'login']);
-
 
 // TB BULAN
 Route::get('/bulan', [BulansController::class, 'index']);
@@ -43,43 +41,32 @@ Route::post('/midtrans/callback', [BayarController::class, 'handleCallback']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    //LOGOUT 
+    Route::post('/logout', [UsersController::class, 'logout']);
     
     Route::get('/siswa', [SiswasController::class, 'index']);
     Route::get('/siswa-profile/{id}', [SiswasController::class, 'show']);
-    
-    
+
     //get data di dashboard admin berdasarkan dropdown rayon yang dipilih
     Route::get('/admin/{rayon}/siswa', [SiswasController::class, 'getStudentsByRayon']);
-    
+
     // TB SISWA
     Route::get('/siswa-ps', [SiswasController::class, 'indexPs']);
     Route::get('/search/siswa/ps', [SiswasController::class, 'searchPs']);
-    
-    
+
     //TB BUKTI 
     Route::get('/bukti', [BuktiController::class, 'index']);
-    
+
     //TB BUKTI 
     Route::get('/bayar', [BayarController::class, 'index']);
     Route::get('/data-bayar', [BayarController::class, 'getDataBayar']);
-    
     Route::get('/users', [UsersController::class, 'index']);
-
-
-    //LOGOUT 
-    Route::post('/logout', [UsersController::class, 'logout']);
 
 
     //TB SISWA
     Route::post('/siswa', [SiswasController::class, 'create']);
     Route::put('/siswa/{id}', [SiswasController::class, 'update']);
     Route::delete('/siswa/{id}', [SiswasController::class, 'destroy']);
-    
-
-    // //TB KATEGORI
-    // Route::post('/kategori', [KategoriController::class, 'create']);
-    // Route::put('/kategori/{id}', [KategoriController::class, 'update']);
-    // Route::delete('/kategori/{id}', [KategoriController::class, 'destroy']);
 
     //TB RAYON
     Route::post('/rayon', [RayonsController::class, 'create']);
@@ -89,14 +76,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/jumlah-infaq', [RayonsController::class, 'jumlahInfaqRayon']);
 
     //TB BUKTI
-    Route::post('/bukti/{id_bayar}', [BuktiController::class, 'create']);
-// Route::put('/update-status/{id_bukti}', [BuktiController::class, 'uploadPembayaran']);
-Route::post('/upload-pembayaran/{id_bayar}', [BuktiController::class, 'uploadPembayaran']);
-
-
-
-    Route::put('/bukti/{id}', [BuktiController::class, 'update']);
+    // Route::post('/bukti/{id_bayar}', [BuktiController::class, 'create']);
+    Route::post('/upload-pembayaran/{id_bayar}', [BuktiController::class, 'uploadPembayaran']);
     Route::delete('/bukti/{id}', [BuktiController::class, 'destroy']);
+    // Route::put('/bukti/{id}', [BuktiController::class, 'update']);
 
 
     //TB BAYAR

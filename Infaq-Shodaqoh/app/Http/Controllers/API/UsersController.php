@@ -182,7 +182,33 @@ class UsersController extends Controller
         ]);
     }
 
-    // {
+    public function destroy($id)
+{
+    $user = Users::find($id);
+
+    if (!$user) {
+        return response()->json([
+            'success' => false,
+            'message' => 'User tidak ditemukan'
+        ], 404);
+    }
+
+    // Jika user punya relasi siswa, hapus juga jika diperlukan
+    if ($user->role === 'Siswa') {
+        $siswa = Siswas::where('user_id', $user->id)->first();
+        if ($siswa) {
+            $siswa->delete();
+        }
+    }
+
+    $user->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'User berhasil dihapus'
+    ]);
+}
+
     //     $credentials = $request->only('email', 'password');
 
     //     // Cek validitas login
@@ -261,7 +287,7 @@ class UsersController extends Controller
         ]);
     
         // Cari user berdasarkan email
-        $user = Users::with('siswa')->where('email', $request->input('email'))->first();
+        $user = Users::with('siswas')->where('email', $request->input('email'))->first();
     
         // Periksa apakah user ditemukan dan password cocok
         if (!$user || $user->password !== $request->input('password')) {

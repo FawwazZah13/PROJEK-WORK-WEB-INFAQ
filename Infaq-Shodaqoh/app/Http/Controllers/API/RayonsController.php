@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Bayar;
 use App\Models\Rayons;
+use App\Models\Siswas;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RayonResource;
@@ -60,56 +62,41 @@ class RayonsController extends Controller
     }
 
     // InfaqController.php
-public function jumlahInfaqRayon(Request $request)
-{
-    // Ambil user yang sedang login
-    $user = $request->user();
-
-    // Periksa apakah user memiliki role PS
-    if ($user->role === 'PS') {
-        // Ambil data siswa terkait user
-        $siswa = $user->siswa;
-
-        // Cek apakah siswa ditemukan
-        if (!$siswa) {
+    public function jumlahInfaqRayon(Request $request)
+    {
+        $user = $request->user();
+    
+        if ($user->role === 'PS') {
+            $rayonNama = $user->rayon;
+    
+            // Ambil semua siswa ID + nominal mereka di rayon ini
+            $siswaRayon = Siswas::whereHas('rayons', function ($query) use ($rayonNama) {
+                $query->where('rayon', $rayonNama);
+            })->get(['id', 'nominal']);
+    
+            $totalInfaq = 0;
+    
+            foreach ($siswaRayon as $siswa) {
+                // Hitung berapa kali siswa ini bayar
+                $jumlahBayar = DB::table('tb_bayar')
+                    ->where('siswa_id', $siswa->id)
+                    ->count();
+    
+                // Tambahkan ke total
+                $totalInfaq += $jumlahBayar * $siswa->nominal;
+            }
+    
             return response()->json([
-                'success' => false,
-                'message' => 'Data siswa tidak ditemukan.'
-            ], 403);
+                'success' => true,
+                'total_infaq' => $totalInfaq
+            ]);
         }
-
-        // Ambil rayon terkait siswa
-        $rayon = $siswa->rayon;
-
-        // Cek apakah rayon ditemukan
-        if (!$rayon) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data rayon tidak ditemukan.'
-            ], 403);
-        }
-
-        // Hitung total nominal untuk rayon tersebut dari tabel 'bayar'
-        $totalNominal = Bayar::whereHas('siswa', function($query) use ($rayon) {
-            $query->where('rayon', $rayon);
-        })->sum('nominal');
-
+    
         return response()->json([
-            'success' => true,
-            'total_nominal' => $totalNominal
-        ]);
+            'success' => false,
+            'message' => 'Hanya pengguna dengan role PS yang dapat mengakses data ini.'
+        ], 403);
     }
-
-    return response()->json([
-        'success' => false,
-        'message' => 'Hanya pengguna dengan role PS yang dapat mengakses data ini.'
-    ], 403);
-}
-
-
-
-
-
     
 
     public function create(Request $request)

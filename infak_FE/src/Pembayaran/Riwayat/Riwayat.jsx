@@ -220,17 +220,11 @@ function Riwayat() {
                   Tanggal Pembayaran: {popupData.details?.paymentDate || "-"}
                 </p>
                 <p className="text-lg text-gray-600">
-                  Info Bank: {popupData.details?.bankInfo || "-"}
-                </p>
-                <p className="text-lg text-gray-600">
-                  Berita Acara: {popupData.details?.notes || "-"}
+                  Berita Acara: Infaq dan Shodaqoh
                 </p>
               </div>
               <div className="border-t border-gray-300 mt-4"></div>
-              <p className="text-sm text-gray-500 mt-2 ml-2">Diterima oleh Wikrama</p>
-              <p className="text-lg text-gray-600 ml-2">
-                Catatan: {popupData.details?.notes || "-"}
-              </p>
+              <p className="text-xl text-gray-500 mt-2 ml-2">Diterima oleh Wikrama</p>
             </div>
           </div>
         </div>

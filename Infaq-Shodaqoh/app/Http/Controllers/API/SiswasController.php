@@ -15,58 +15,6 @@ use Illuminate\Support\Facades\Validator;
 
 class SiswasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-    //  public function indexPs(Request $request)
-    //  {
-    //      // Ambil token dari request
-    //      $token = $request->bearerToken();
- 
-    //      // Cek apakah token ada
-    //      if (!$token) {
-    //          return response()->json(['message' => 'Token not provided'], 401);
-    //      }
- 
-    //      // Ambil user_id dari cache berdasarkan token
-    //      $user_id = Cache::get('user_token_' . $token);
- 
-    //      // Jika user_id tidak ditemukan, token tidak valid
-    //      if (!$user_id) {
-    //          return response()->json(['message' => 'Invalid token'], 401);
-    //      }
- 
-    //      // Cari user berdasarkan user_id yang disimpan di cache
-    //      $user = Users::find($user_id);
- 
-    //      // Jika user tidak ditemukan
-    //      if (!$user) {
-    //          return response()->json(['message' => 'User not found'], 404);
-    //      }
- 
-    //      // Cek apakah role user adalah 'PS'
-    //      if ($user->role === 'PS') {
-    //          // Ambil rayon dari cache berdasarkan user ID
-    //          $rayon = Cache::get('user_rayon_' . $user->id);
- 
-    //          if ($rayon) {
-    //              // Ambil data siswa berdasarkan rayon
-    //              $siswa = Siswas::with('rayons') // Pastikan relasi 'rayon' terdefinisi di model Siswas
-    //                  ->whereHas('rayons', function ($query) use ($rayon) {
-    //                      $query->where('rayon', $rayon);
-    //                  })
-    //                  ->get();
-    //              return response()->json($siswa);
-    //          }
- 
-    //          return response()->json(['message' => 'Rayon not found'], 404);
-    //      }
- 
-    //      // Jika role bukan 'PS'
-    //      return response()->json(['message' => 'Access denied'], 403);
-    //  }
-
     public function indexPs(Request $request)
 {
     $token = $request->bearerToken();
@@ -174,43 +122,42 @@ class SiswasController extends Controller
 
     public function create(Request $request)
     {
-        // Ambil NIS dari session, token, atau parameter request (misal dari session login)
-        $nis = $request->user()->nis; // Asumsi NIS sudah ada di session user yang login
-
-        // Validasi input dari form
+        // Validasi input
         $validator = Validator::make($request->all(), [
-            'no_tlp' => 'required',
+            'nis' => 'required|unique:tb_siswa,nis',
+            'name' => 'required|string|max:255',
+            'nama_rombel' => 'required|string|max:255',
+            'no_tlp' => 'required|string|max:15',
             'nominal' => 'required|numeric',
+            'email' => 'required|email|unique:tb_siswa,email',
+            'rayon_id' => 'required|exists:rayons,id', // pastikan id rayon valid
+            'user_id' => 'required|exists:tb_users,id'  // pastikan user_id valid
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ada kesalahan',
+                'message' => 'Validasi gagal.',
                 'data' => $validator->errors()
-            ]);
+            ], 422);
         }
-
-        // Cari data siswa berdasarkan NIS
-        $siswas = Siswas::where('nis', $nis)->first();
-
-        if (!$siswas) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data siswa tidak ditemukan.'
-            ]);
-        }
-
-        // Update data no_tlp dan nominal
-        $siswas->update([
+    
+        // Simpan data siswa baru
+        $siswa = Siswas::create([
+            'nis' => $request->nis,
+            'name' => $request->name,
+            'nama_rombel' => $request->nama_rombel,
             'no_tlp' => $request->no_tlp,
             'nominal' => $request->nominal,
+            'email' => $request->email,
+            'rayon_id' => $request->rayon_id,
+            'user_id' => $request->user_id
         ]);
-
+    
         return response()->json([
             'success' => true,
-            'message' => 'Data siswa berhasil diperbarui.',
-            'data' => $siswas
+            'message' => 'Data siswa berhasil dibuat.',
+            'data' => $siswa
         ]);
     }
 
@@ -286,51 +233,51 @@ class SiswasController extends Controller
         ]);
     }
     
-    public function searchPs(Request $request)
-    {
-        // Ambil query pencarian dari parameter
-        $query = $request->input('key');
+    // public function searchPs(Request $request)
+    // {
+    //     // Ambil query pencarian dari parameter
+    //     $query = $request->input('key');
         
-        // Ambil data user yang sedang login
-        $user = auth()->user(); 
+    //     // Ambil data user yang sedang login
+    //     $user = auth()->user(); 
         
-        // Pastikan user memiliki data rayon
-        if (!$user || !$user->rayon) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Rayon tidak ditemukan untuk user.'
-            ], 400);
-        }
+    //     // Pastikan user memiliki data rayon
+    //     if (!$user || !$user->rayon) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Rayon tidak ditemukan untuk user.'
+    //         ], 400);
+    //     }
     
-        // Ambil nama rayon dari data user
-        $rayonName = $user->rayon;
+    //     // Ambil nama rayon dari data user
+    //     $rayonName = $user->rayon;
     
-        // Cari rayon_id berdasarkan nama rayon yang dimiliki oleh user
-        $rayon = Rayons::where('rayon', $rayonName)->first();
+    //     // Cari rayon_id berdasarkan nama rayon yang dimiliki oleh user
+    //     $rayon = Rayons::where('rayon', $rayonName)->first();
     
-        if (!$rayon) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Rayon tidak valid.'
-            ], 400);
-        }
+    //     if (!$rayon) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Rayon tidak valid.'
+    //         ], 400);
+    //     }
     
-        // Lakukan pencarian di database siswa berdasarkan rayon_id yang sesuai
-        $siswas = Siswas::where('rayon_id', $rayon->id) // Filter berdasarkan rayon_id yang sesuai
-            ->where(function($queryBuilder) use ($query) {
-                // Cari berdasarkan nama atau NIS
-                $queryBuilder->where('name', 'like', '%' . $query . '%')
-                             ->orWhere('nis', 'like', '%' . $query . '%');
-            })
-            ->get();
+    //     // Lakukan pencarian di database siswa berdasarkan rayon_id yang sesuai
+    //     $siswas = Siswas::where('rayon_id', $rayon->id) // Filter berdasarkan rayon_id yang sesuai
+    //         ->where(function($queryBuilder) use ($query) {
+    //             // Cari berdasarkan nama atau NIS
+    //             $queryBuilder->where('name', 'like', '%' . $query . '%')
+    //                          ->orWhere('nis', 'like', '%' . $query . '%');
+    //         })
+    //         ->get();
     
-        // Kembalikan hasil pencarian dalam bentuk JSON
-        return response()->json([
-            'success' => true,
-            'message' => 'Data siswa berhasil diambil.',
-            'data' => SiswasResource::collection($siswas),
-        ]);
-    }
+    //     // Kembalikan hasil pencarian dalam bentuk JSON
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Data siswa berhasil diambil.',
+    //         'data' => SiswasResource::collection($siswas),
+    //     ]);
+    // }
     
 
     public function getStudentsByRayon(Request $request, $rayon)

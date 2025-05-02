@@ -52,84 +52,85 @@ class BuktiController extends Controller
     }
     
 
+    // public function create(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'penerima' => 'required',
+    //         // 'tanggal_bayar' => 'required',
+    //         'paraf' => 'required',
+    //         'ttd_ortu' => 'required',
+    //         'status' => 'required',
+    //         // 'bulan_id' => 'required',
+    //     ]);
 
-    public function create(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'penerima' => 'required',
-            // 'tanggal_bayar' => 'required',
-            'paraf' => 'required',
-            'ttd_ortu' => 'required',
-            'status' => 'required',
-            // 'bulan_id' => 'required',
-        ]);
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Ada kesalahan',
+    //             'data' => $validator->errors()
+    //         ]);
+    //     }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Ada kesalahan',
-                'data' => $validator->errors()
-            ]);
-        }
+    //     $bukti = Bukti::create([
+    //         'penerima' => $request->penerima,
+    //         // 'tanggal_bayar' => $request->tanggal_bayar,
+    //         'paraf' => $request->paraf,
+    //         'ttd_ortu' => $request->ttd_ortu,
+    //         'status' => $request->status,
+    //         // 'bulan_id' => $request->bulan_id,
+    //     ]);
 
-        $bukti = Bukti::create([
-            'penerima' => $request->penerima,
-            // 'tanggal_bayar' => $request->tanggal_bayar,
-            'paraf' => $request->paraf,
-            'ttd_ortu' => $request->ttd_ortu,
-            'status' => $request->status,
-            // 'bulan_id' => $request->bulan_id,
-        ]);
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Sukses create Data',
+    //         'data' => $bukti,
+    //     ]);
+    // }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Sukses create Data',
-            'data' => $bukti,
-        ]);
-    }
+    
 
-    public function update(Request $request, string $id)
-    {
-        $bukti = Bukti::find($id);
+    // public function update(Request $request, string $id)
+    // {
+    //     $bukti = Bukti::find($id);
 
-        if (!$bukti) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Data tidak ditemukan'
-            ], 404);
-        }
+    //     if (!$bukti) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Data tidak ditemukan'
+    //         ], 404);
+    //     }
 
-        $validator = Validator::make($request->all(), [
-            'penerima' => 'required',
-            // 'tanggal_bayar' => 'required',
-            'paraf' => 'required',
-            'ttd_ortu' => 'required',
-            'status' => 'required',
-            // 'bulan_id' => 'required',
-        ]);
+    //     $validator = Validator::make($request->all(), [
+    //         'penerima' => 'required',
+    //         // 'tanggal_bayar' => 'required',
+    //         'paraf' => 'required',
+    //         'ttd_ortu' => 'required',
+    //         'status' => 'required',
+    //         // 'bulan_id' => 'required',
+    //     ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Gagal melakukan update data!',
-                'data' => $validator->errors()
-            ]);
-        }
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Gagal melakukan update data!',
+    //             'data' => $validator->errors()
+    //         ]);
+    //     }
 
-        $bukti->penerima = $request->input('penerima');
-        // $bukti->tanggal_bayar = $request->input('tanggal_bayar');
-        $bukti->paraf = $request->input('paraf');
-        $bukti->ttd_ortu = $request->input('ttd_ortu');
-        $bukti->status = $request->input('status');
-        // $bukti->bulan_id = $request->input('bulan_id');
+    //     $bukti->penerima = $request->input('penerima');
+    //     // $bukti->tanggal_bayar = $request->input('tanggal_bayar');
+    //     $bukti->paraf = $request->input('paraf');
+    //     $bukti->ttd_ortu = $request->input('ttd_ortu');
+    //     $bukti->status = $request->input('status');
+    //     // $bukti->bulan_id = $request->input('bulan_id');
 
-        $bukti->save();
+    //     $bukti->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Sukses Update Data'
-        ]);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Sukses Update Data'
+    //     ]);
+    // }
 
     /**
      * Remove the specified resource from storage.

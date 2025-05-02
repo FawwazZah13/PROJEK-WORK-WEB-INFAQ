@@ -135,9 +135,10 @@ function Tagihan() {
               </p>
             </div>
             <div className="flex justify-center w-[150px] h-[40px]">
-              <span className="bg-[#A9B782] text-white py-1 px-4 rounded text-sm flex items-center justify-center">
-                Rp{nominal.toLocaleString("id-ID")}
-              </span>
+            <span className="bg-[#A9B782] text-black py-1 px-4 rounded text-sm flex items-center justify-center font-semibold">
+  {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(nominal)}
+</span>
+
             </div>
           </div>
         </div>
